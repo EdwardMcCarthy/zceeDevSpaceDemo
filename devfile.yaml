@@ -1,6 +1,6 @@
 schemaVersion: 2.1.0
 metadata:
-  name: cicsCatalogApi
+  name: zcee-devspaces-demo
 attributes:
   controller.devfile.io/storage-type: ephemeral
 projects:
@@ -9,8 +9,19 @@ projects:
         revision: main
       remotes:
         origin: 'https://github.com/EdwardMcCarthy/zceeDevSpaceDemo.git'
-    name: cicsCatalogApi
+    name: cics-egui-api
 components:
+    - name: che-workspace
+      container:
+        image: 'registry.redhat.io/devspaces/udi-rhel8@sha256:99ff1b5c541855e4cf368816c4bcdcdc86d32304023f72c4443213a4032ef05b'
+        memoryLimit: 1024Mi
+        volumeMounts: 
+          - name: data
+            path: /projects/cics-egui-api/start
+        mountSources: true
+    - name: data
+      volume:
+         size: 1G
     - name: zosconnect
       container:
         endpoints:
@@ -21,7 +32,15 @@ components:
             targetPort: 9080
         env:
           - name: ZCON_DESIGNER_PROJECT
-            value: /projects/cicsCatalogApi/apiProject
-        image: 'icr.io/zosconnect/ibm-zcon-designer:3.0.70'
+            value: /projects/cics-egui-api/start
+          - name: CICS_HOST
+            value: ibm.com
+          - name: CICS_PORT
+            value: "33067"
+          - name: CICS_USER
+            value: uuuu
+          - name: CICS_PASSWORD
+            value: pppp
+        image: 'icr.io/zosconnect/ibm-zcon-designer:3.0.66'
         memoryLimit: 4927M
         mountSources: true
